@@ -357,11 +357,35 @@ DijetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    hJet2NHF->Fill(selectedJets[1].neutralHadronEnergyFraction(), mWeight);
    hJet2EMF->Fill(selectedJets[1].electronEnergyFraction() + selectedJets[1].photonEnergyFraction(), mWeight);
 
+   // collection of wide jets
+   std::vector<reco::Candidate::LorentzVector> wideJets = {reco::Candidate::LorentzVector(), reco::Candidate::LorentzVector()};
+
+   // loop over the selected jets and form wide jets
+   for(std::vector<pat::Jet>::const_iterator j_it = selectedJets.begin(); j_it != selectedJets.end(); ++j_it)
+   {
+     // skip jets that don't pass eta, jet ID, and pt cuts
+     retpf.set(false);
+     if( !( std::abs(j_it->eta()) < 2.5 &&
+            pfjetIDTight(selectedJets[1], retpf) &&
+            j_it->pt() > 30. ) ) continue;
+
+     double DeltaR1 = reco::deltaR(selectedJets[0],*j_it);
+     double DeltaR2 = reco::deltaR(selectedJets[1],*j_it);
+
+     if(DeltaR1 < DeltaR2 && DeltaR1 < 1.1)
+       wideJets[0] += j_it->p4();
+     else if(DeltaR2 < 1.1)
+       wideJets[1] += j_it->p4();
+   }
+
+   // sort wide jets by their pt
+   sort(wideJets.begin(), wideJets.end(), compare_JetPt<reco::Candidate::LorentzVector>);
+
    // get the mass of the two leading jets (needs their 4-vectors)
    double rawMass = (selectedJets[0].correctedJet("Uncorrected").p4()+selectedJets[1].correctedJet("Uncorrected").p4()).M();
-   double corrMass = (selectedJets[0].p4()+selectedJets[1].p4()).M();
-   double deltaEta = std::abs(selectedJets[0].eta()-selectedJets[1].eta());
-   double deltaPhi = reco::deltaPhi(selectedJets[0].phi(),selectedJets[1].phi());
+   double corrMass = (wideJets[0]+wideJets[1]).M();
+   double deltaEta = std::abs(wideJets[0].eta()-wideJets[1].eta());
+   double deltaPhi = reco::deltaPhi(wideJets[0].phi(),wideJets[1].phi());
    if (corrMass < dijetMassCut) return; // default cut is 1118 GeV
    if (deltaEta > 1.3) return;
    hRawDijetMass->Fill(rawMass, mWeight);
@@ -369,7 +393,7 @@ DijetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    hDijetDeltaPhi->Fill(deltaPhi, mWeight);
    hDijetDeltaPhiNJets->Fill(deltaPhi, selectedJets.size(), mWeight);
    hDijetDeltaEta->Fill(deltaEta, mWeight);
-   hDijetEta1Eta2->Fill(selectedJets[0].eta(), selectedJets[1].eta(), mWeight);
+   hDijetEta1Eta2->Fill(wideJets[0].eta(), wideJets[1].eta(), mWeight);
 
 
    hEventCount->Fill(3.);          // counts unweighted events after full event selection
