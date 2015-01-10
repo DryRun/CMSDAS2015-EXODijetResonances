@@ -71,44 +71,44 @@ void makePseudoData()
   diffCounts->SetTitleOffset(1.4,"Y");
 
   // declare a fit function and fit
-  TF1 *fit = new TF1("fit", "[0]*pow(1-x/13000.0,[1])/pow(x/13000.,[2]+[3]*log(x/13000.))",1118,6099);
-  fit->SetParameter(0,2.94554e-04);
-  fit->SetParameter(1,5.57678e+00);
-  fit->SetParameter(2,7.09806e+00);
-  fit->SetParameter(3,3.48634e-01);
+  //TF1 *fit = new TF1("fit", "[0]*pow(1-x/13000.0,[1])/pow(x/13000.,[2]+[3]*log(x/13000.))",1118,6099);
+  //fit->SetParameter(0,2.94554e-04);
+  //fit->SetParameter(1,5.57678e+00);
+  //fit->SetParameter(2,7.09806e+00);
+  //fit->SetParameter(3,3.48634e-01);
 
   //gStyle->SetOptFit(1111);
 
-  fit->SetLineWidth(2);
-  fit->SetLineColor(kRed);
-  std::cout << "*********************************************************" << std::endl;
-  TFitResultPtr s = diffCounts->Fit("fit","SRLI");
-  TString status_default = gMinuit->fCstatu.Data();
+  //fit->SetLineWidth(2);
+  //fit->SetLineColor(kRed);
+  //std::cout << "*********************************************************" << std::endl;
+  //TFitResultPtr s = diffCounts->Fit("fit","SRLI");
+  //TString status_default = gMinuit->fCstatu.Data();
   // Results of the fit
-  std::cout << "*********************************************************" << std::endl;
-  Double_t chi_fit = fit->GetChisquare();
-  Double_t ndf_fit = fit->GetNDF();
-  std::cout << "Chi2/ndf: " << chi_fit << "/" << ndf_fit << " = " << chi_fit/ndf_fit << std::endl;
-  std::cout << "Status: "<<status_default<<std::endl;
-  std::cout << "*********************************************************" << std::endl;
+  //std::cout << "*********************************************************" << std::endl;
+  //Double_t chi_fit = fit->GetChisquare();
+  //Double_t ndf_fit = fit->GetNDF();
+  //std::cout << "Chi2/ndf: " << chi_fit << "/" << ndf_fit << " = " << chi_fit/ndf_fit << std::endl;
+  //std::cout << "Status: "<<status_default<<std::endl;
+  //std::cout << "*********************************************************" << std::endl;
 
   // Print fit results
   //s->Print("V");
   
-  TCanvas *c = new TCanvas("c", "",1000,800);
-  c->cd();
+  //TCanvas *c = new TCanvas("c", "",1000,800);
+  //c->cd();
 
-  diffCounts->Draw();
+  //diffCounts->Draw();
 
-  TLegend *legend = new TLegend(.7,.5,.85,.6);
-  legend->SetBorderSize(0);
-  legend->SetFillColor(0);
-  legend->SetFillStyle(0);
-  legend->AddEntry(diffCounts, "QCD MC","lp");
-  legend->AddEntry(fit, "Fit","l");
-  legend->Draw();
+  //TLegend *legend = new TLegend(.7,.5,.85,.6);
+  //legend->SetBorderSize(0);
+  //legend->SetFillColor(0);
+  //legend->SetFillStyle(0);
+  //legend->AddEntry(diffCounts, "QCD MC","lp");
+  //legend->AddEntry(fit, "Fit","l");
+  //legend->Draw();
   
-  c->SetLogy();
+  //c->SetLogy();
   //c->SaveAs("diffCounts.eps");
 
   // save pseudo-data
