@@ -297,6 +297,20 @@ DijetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    {
      pat::Jet jet = *j_it;
 
+     ////////////////////////////////////////////
+     // Updated JEC
+     ////////////////////////////////////////////
+     JetCorrector->setJetEta(jet.eta());
+     JetCorrector->setJetPt(jet.correctedJet("Uncorrected").pt());
+     JetCorrector->setJetA(jet.jetArea());
+     JetCorrector->setRho(*rho);
+
+     double correction = JetCorrector->getCorrection();
+
+     // undo the old JEC and apply a new one
+     jet.scaleEnergy(jet.jecFactor("Uncorrected")*correction);
+     ////////////////////////////////////////////
+
      // introduce a purposeful bias to the correction, to show what happens
      jet.scaleEnergy(JESbias);
 
@@ -315,6 +329,9 @@ DijetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    // require at least two jets to continue
    if(selectedJets.size()<2) return;
+
+   // sort by corrected pt (not necessarily the same order as with the old JEC)
+   sort(selectedJets.begin(), selectedJets.end(), compare_JetPt<pat::Jet>);
 
    // select high pt, central, non-noise-like jets
    if (selectedJets[0].pt()<60.0) return;

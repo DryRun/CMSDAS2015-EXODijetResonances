@@ -27,7 +27,7 @@ void makePseudoData()
   TRandom3 rand(37);
 
   // input file
-  TFile *file = new TFile("test/histos_FullStats.root");
+  TFile *file = new TFile("test/histos_FullStats_JEC.root");
 
   // get event counts
   TH1F *eventCount = (TH1F*)file->Get("dijetAna/hEventCount");
@@ -112,6 +112,6 @@ void makePseudoData()
   //c->SaveAs("diffCounts.eps");
 
   // save pseudo-data
-  hDijetMassPseudo->SaveAs("hDijetMassPseudo.root");
+  hDijetMassPseudo->SaveAs("hDijetMassPseudo_JEC.root");
 
 }
