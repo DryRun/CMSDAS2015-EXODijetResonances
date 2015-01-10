@@ -36,7 +36,7 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
-#include "DataFormats/Math/interface/deltaPhi.h"
+#include "DataFormats/Math/interface/deltaR.h"
 #include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
 
 // For JECs
@@ -58,7 +58,8 @@ class DijetAnalyzer : public edm::EDAnalyzer {
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
-      static bool compare_JetPt(const pat::Jet& jet1, const pat::Jet& jet2) {
+      template<typename T>
+      static bool compare_JetPt(const T& jet1, const T& jet2) {
         return ( jet1.pt() > jet2.pt() );
       }
 
@@ -317,11 +318,11 @@ DijetAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
    // select high pt, central, non-noise-like jets
    if (selectedJets[0].pt()<60.0) return;
-   if (fabs(selectedJets[0].eta())>2.5) return;
+   if (std::abs(selectedJets[0].eta())>2.5) return;
    retpf.set(false);
    if ( !pfjetIDTight(selectedJets[0], retpf) ) return;
    if (selectedJets[1].pt()<30.0) return;
-   if (fabs(selectedJets[1].eta())>2.5) return;
+   if (std::abs(selectedJets[1].eta())>2.5) return;
    retpf.set(false);
    if ( !pfjetIDTight(selectedJets[1], retpf) ) return;
 
