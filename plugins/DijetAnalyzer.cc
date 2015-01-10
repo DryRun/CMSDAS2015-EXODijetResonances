@@ -36,7 +36,7 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
-#include "DataFormats/Math/interface/deltaPhi.h"
+#include "DataFormats/Math/interface/deltaR.h"
 #include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
 
 // For JECs
@@ -58,7 +58,8 @@ class DijetAnalyzer : public edm::EDAnalyzer {
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
-      static bool compare_JetPt(const pat::Jet& jet1, const pat::Jet& jet2) {
+      template<typename T>
+      static bool compare_JetPt(const T& jet1, const T& jet2) {
         return ( jet1.pt() > jet2.pt() );
       }
 
